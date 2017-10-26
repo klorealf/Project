@@ -5,5 +5,6 @@ end
 get "/dogs" do
   @dogs = Dog.all
   erb :"dogs/index"
+  hey!
 end
 
