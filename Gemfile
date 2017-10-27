@@ -7,12 +7,15 @@ gem 'pg'
 gem 'sinatra', '~> 1.0'
 gem 'sinatra-contrib'
 
-gem 'activesupport', '~>5.1.0'
-gem 'activerecord', '~>5.1.0'
+gem 'activesupport', '~>4.2.0'
+gem 'activerecord', '~>4.2.0'
 
 gem 'rake'
 
 gem 'shotgun', '~>0.9.1'
+gem 'rspotify'
+
+gem 'rails_12factor', group: :production
 
 group :test do
   gem 'shoulda-matchers'
@@ -24,4 +27,5 @@ end
 group :test, :development do
   gem 'factory_girl'
   gem 'faker'
+  gem 'dotenv' # don't want this to be bundled in production
 end

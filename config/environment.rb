@@ -1,3 +1,4 @@
+
 # Set up gems listed in the Gemfile.
 # See: http://gembundler.com/bundler_setup.html
 #      http://stackoverflow.com/questions/7243486/why-do-you-need-require-bundler-setup
@@ -19,11 +20,23 @@ require 'sinatra'
 require "sinatra/reloader" if development?
 
 require 'erb'
+require 'rspotify'
+
+configure :test, :development do
+  require 'dotenv/load' # don't want this to run in production
+end
+
+configure :production do
+  require 'rails_12factor'
+end
 
 # Some helper constants for path-centric logic
 APP_ROOT = Pathname.new(File.expand_path('../../', __FILE__))
 
 APP_NAME = APP_ROOT.basename.to_s
+
+RSpotify::authenticate(ENV['SPOTIFY_CLIENT_ID'], ENV['SPOTIFY_CLIENT_SECRET'])
+
 
 configure do
   # By default, Sinatra assumes that the root is the file that calls the configure block.
@@ -32,6 +45,9 @@ configure do
   # See: http://www.sinatrarb.com/faq.html#sessions
   enable :sessions
   set :session_secret, ENV['SESSION_SECRET'] || 'this is a secret shhhhh'
+  # to manually do spotify api
+  # insert phil stuff here
+  set :spotify_access_token, JSON.parse(response.body)
 
   # Set the views to
   set :views, File.join(Sinatra::Application.root, "app", "views")
@@ -40,10 +56,7 @@ end
 # Set up the controllers and helpers
 Dir[APP_ROOT.join('app', 'controllers', '*.rb')].each { |file| require file }
 Dir[APP_ROOT.join('app', 'helpers', '*.rb')].each { |file| require file }
+Dir[APP_ROOT.join('app', 'lib', '*.rb')].each { |file| require file }
 
-# Include ApplicationRecord. This ports over the semantics seen in Rails 5 and
-# accustoms students to inheriting from ApplicationRecord.
-require APP_ROOT.join('app', 'models', 'application_record').to_s
-
-# Set up the database
+# Set up the database and models
 require APP_ROOT.join('config', 'database')
